@@ -17,6 +17,7 @@ class Timer:
         self.tima = Tima(mmu)
 
     def tick(self, cycles : int = 0):
+        multiplier = 1
         self.div_cycles += cycles
 
         key1 = self.mmu.read_byte(IO_Registers.KEY1)
@@ -24,6 +25,7 @@ class Timer:
         # increment again if DOUBLE SPEED MODE
         if key1 & 0b10000000 == 0b10000000:
             self.div_cycles += cycles
+            multiplier = 2
 
         if key1 & 1 == 1: #Prepare enable/disable double speed
             self.mmu.write_byte(IO_Registers.KEY1, key1 & 0b10000000)
@@ -58,6 +60,8 @@ class Timer:
         div = ( div + 1 ) & 0xff
         self.mmu.write_byte(IO_Registers.DIV, div, True)
         self.div_cycles -= Timer.DIV_INC_TIME
+
+        
 
 class Tima:
 

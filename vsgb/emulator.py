@@ -16,8 +16,7 @@ from vsgb.timer import Timer
 from vsgb.window import Window
 from vsgb.instructions import instructions
 from vsgb.save_state_manager import SaveStateManager
-import threading
-from time import sleep
+
 
 class Emulator:
 
@@ -40,12 +39,6 @@ class Emulator:
         self.changing_state = False
         self.serialize_ok = False
         self.save_state_manager = SaveStateManager()
-        threading.Thread(target=Emulator.play_sound, args=[self]).start()
-
-    def play_sound(self):
-        while True:
-            sleep(0.0000000000001)
-            self.apu.step()
 
     def run(self):
         try:
@@ -80,6 +73,7 @@ class Emulator:
                     if self.debug:
                         logging.debug('{}\t\t\t{}'.format(self.get_last_instruction(), self.cpu.registers))
                 self.timer.tick(ticks)
+                self.apu.step(ticks)
                 self.ppu.step(ticks)
                 
                 if refresh:
